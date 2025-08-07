@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <title>使用Docker執行SpringBoot網頁程式</title>
+    <style>
+        body {
+            background-image: url("/wood.jpg"); /* 讀取我的背景圖片，檔案放在static資料夾內 */
+            background-size: cover; /* 讓背景填滿整個畫面 */
+            background-repeat: no-repeat; /* 避免圖片重複 */
+            font-family: Arial; /* 設定字體優先度 */
+            margin: 30px;
+        }
+        pre {
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+<h1>使用Docker執行SpringBoot網頁程式</h1>
+<h3>步驟1: 寫Dockerfile</h3>
+<pre>
+        FROM openjdk:21-jdk-slim  #使用較新版本的 JDK
+
+        ENV JAR_NAME=app.jar      #設定 jar 名稱為環境變數
+        WORKDIR /app                      #切換工作目錄，讓後面指令更簡潔
+
+        COPY target/demo-0.0.1-SNAPSHOT.jar $JAR_NAME   #用變數控制複製名稱
+
+        ENTRYPOINT ["java", "-jar", "app.jar"]    #從工作目錄執行 jar
+
+    </pre>
+    <h3>步驟2:打包jar</h3>
+    <pre>
+        例如:我的專案我放在E槽，cd路徑到cd E:\SpringBootProject\usedocker
+        然後打指令./mvnw clean package
+
+        輸入完成後等跑完，我會在target/資料夾下看到usedocker-0.0.1-SNAPSHOT.jar
+    </pre>
+    <h3>步驟3: 用Docker建立image檔案</h3>
+    <pre>
+        在PowerShell路徑E:\SpringBootProject\usedocker
+        輸入指令docker build -t usedocker-app .
+        建立映像檔案-t為tag標籤為usedocker-app
+        . 指的是使用當前資料夾內的所有資料製作成image檔案
+    </pre>
+    <h3>步驟4: 執行容器</h3>
+    <pre>
+        在PowerShell路徑E:\SpringBootProject\usedocker
+        輸入指令docker run -d -p 3000:8080 usedocker-app
+    </pre>
+    <h3>Docker相關指令</h3>
+    <pre>
+
+        Docker ps 查看當前所有正在執行的容器
+        Docker ps –a 查看當前所有正在執行+停止的容器
+        Docker images 查看當前本機裡有哪些image檔案
+        Docker container ls 查看當前容器詳細資訊
+        Docker image ls 查看當前image檔案詳細資訊
+        Docker rm f8c56a8914de 刪除該容器
+        Docker rmi 9087f54861e8 刪除該映像檔
+        Docker stop 容器ID   停止該容器執行
+    </pre>
+</body>
+</html>
